@@ -13,4 +13,5 @@ public class GrpcVirtualThreadConfig {
     public ExecutorService grpcServerExecutor() {
         return Executors.newVirtualThreadPerTaskExecutor();
     }
+
 }

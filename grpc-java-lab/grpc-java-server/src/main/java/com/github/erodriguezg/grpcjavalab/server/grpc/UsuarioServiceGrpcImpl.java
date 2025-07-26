@@ -4,9 +4,9 @@ import com.github.erodriguezg.grpcjavalab.api.proto.UsuarioRequest;
 import com.github.erodriguezg.grpcjavalab.api.proto.UsuarioResponse;
 import com.github.erodriguezg.grpcjavalab.api.proto.UsuarioServiceGrpc;
 import io.grpc.stub.StreamObserver;
+import net.devh.boot.grpc.server.service.GrpcService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.grpc.server.service.GrpcService;
 
 @GrpcService
 public class UsuarioServiceGrpcImpl extends UsuarioServiceGrpc.UsuarioServiceImplBase {
