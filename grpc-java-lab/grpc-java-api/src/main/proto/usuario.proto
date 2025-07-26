@@ -1,0 +1,19 @@
+syntax = "proto3";
+package services.usuario;
+
+option java_package = "com.github.erodriguezg.grpcjavalab.api.proto";
+option java_multiple_files = true;
+option java_outer_classname = "UsuarioServiceProto";
+
+service UsuarioService {
+  rpc CrearUsuario (UsuarioRequest) returns (UsuarioResponse);
+}
+
+message UsuarioRequest {
+  string nombre = 1;
+}
+
+message UsuarioResponse {
+  int64 id = 1;
+  string mensaje = 2;
+}
