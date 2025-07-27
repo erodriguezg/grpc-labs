@@ -8,11 +8,17 @@ security:
 spring:
   application:
     name: grpc-java-web
+  devtools:
+    restart:
+      enabled: true
+    livereload:
+      enabled: true
   threads:
     virtual:
       enabled: true
   thymeleaf:
     enabled: true
+    cache: ${THYMELEAF_CACHE:true}
 
 grpc:
   client:

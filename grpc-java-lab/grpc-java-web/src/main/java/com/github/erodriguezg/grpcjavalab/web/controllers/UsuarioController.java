@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -16,11 +17,12 @@ public class UsuarioController {
 
     private final UsuarioServiceGrpc.UsuarioServiceBlockingStub usuarioServiceGrpc;
 
-    @GetMapping(value = "/test-grpc", produces = MediaType.TEXT_PLAIN_VALUE)
-    public ResponseEntity<String> testGrpc() {
+    @GetMapping(value = "/test-grpc")
+    public String testGrpc(ModelMap model) {
         var requestGrpc = UsuarioRequest.newBuilder().setNombre("Eduardo").build();
         var responseGrpc = usuarioServiceGrpc.crearUsuario(requestGrpc);
-        return ResponseEntity.ok("grpc dice: " + responseGrpc.getMensaje());
+        model.put("mensaje", responseGrpc.getMensaje());
+        return "usuario";
     }
 
 }

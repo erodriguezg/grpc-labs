@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{main-layout/layout}" lang="es">
+
+<body>
+
+<!-- Contenido que se inyectará en layout.html -->
+<div layout:fragment="content" >
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Usuario</h1>
+    </div>
+
+    <!-- Content Row -->
+    <div class="row">
+
+        <div class="col-xl-8 col-lg-7">
+            <div class="card shadow mb-4">
+                <!-- Card Header -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">TEST GRPC</h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                    <p th:text="|Mensaje de GRPC: ${mensaje}|">Mensaje de GRPC: mensaje</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>
