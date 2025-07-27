@@ -5,6 +5,10 @@
 
 <body>
 
+<head>
+    <title layout:fragment="pageTitle">gRPC Java Lab - Index</title>
+</head>
+
 <!-- Contenido que se inyectará en layout.html -->
 <div layout:fragment="content" >
 
@@ -333,6 +337,12 @@
         </div>
     </div>
 </div>
+
+<th:block layout:fragment="page-js">
+    <script th:src="@{/vendor/chart.js/Chart.min.js}"></script>
+    <script th:src="@{/js/demo/chart-area-demo.js}"></script>
+    <script th:src="@{/js/demo/chart-pie-demo.js}"></script>
+</th:block>
 
 </body>
 </html>

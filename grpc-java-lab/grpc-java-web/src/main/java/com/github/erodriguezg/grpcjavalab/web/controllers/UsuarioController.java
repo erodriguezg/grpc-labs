@@ -3,8 +3,6 @@ package com.github.erodriguezg.grpcjavalab.web.controllers;
 import com.github.erodriguezg.grpcjavalab.api.proto.UsuarioRequest;
 import com.github.erodriguezg.grpcjavalab.api.proto.UsuarioServiceGrpc;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
