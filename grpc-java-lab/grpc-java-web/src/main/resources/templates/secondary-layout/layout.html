@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" lang="es">
 
 <head>
+
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -12,7 +13,7 @@
     <meta name="_csrf" th:content="${_csrf.token}" />
     <meta name="_csrf_header" th:content="${_csrf.headerName}" />
 
-    <title layout:fragment="pageTitle">gRPC Java Lab - Main Layout</title>
+    <title layout:fragment="pageTitle">gRPC Java Lab - Secondary Layout</title>
 
     <!-- Custom fonts for this template-->
     <link th:href="@{/vendor/fontawesome-free/css/all.min.css}" rel="stylesheet" type="text/css">
@@ -25,24 +26,20 @@
 
 </head>
 
-<body id="page-top">
+<body class="bg-gradient-primary">
 
-<div id="wrapper">
-    <th:block layout:insert="main-layout/sidebar.html" />
-    <div id="content-wrapper" class="d-flex flex-column">
-        <div id="content">
-            <th:block layout:insert="main-layout/topbar.html" />
-            <div class="container-fluid" layout:fragment="content"></div>
+<div class="container">
+    <!-- Outer Row -->
+    <div class="row justify-content-center">
+        <div class="col-xl-10 col-lg-12 col-md-9">
+            <div class="card o-hidden border-0 shadow-lg my-5">
+                <div class="card-body p-0">
+                    <th:block layout:fragment="content"></th:block>
+                </div>
+            </div>
         </div>
-        <th:block th:insert="main-layout/footer.html" />
     </div>
 </div>
-
-<a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
-</a>
-
-<th:block layout:insert="main-layout/logout-modal.html" />
 
 <!-- Bootstrap core JavaScript-->
 <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
