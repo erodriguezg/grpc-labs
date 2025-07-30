@@ -1,7 +1,7 @@
 package com.github.erodriguezg.grpcjavalab.server.service.impl;
 
+import com.github.erodriguezg.grpcjavalab.server.dto.ComunidadDTO;
 import com.github.erodriguezg.grpcjavalab.server.dto.FiltroBuscarComunidadDTO;
-import com.github.erodriguezg.grpcjavalab.server.entity.Comunidad;
 import com.github.erodriguezg.grpcjavalab.server.repository.ComunidadRepository;
 import com.github.erodriguezg.grpcjavalab.server.service.ComunidadService;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ public class ComunidadServiceImpl implements ComunidadService {
 
     @Transactional(readOnly = true)
     @Override
-    public Page<Comunidad> buscarComunidades(FiltroBuscarComunidadDTO filtro) {
+    public Page<ComunidadDTO> buscarComunidades(FiltroBuscarComunidadDTO filtro) {
         return comunidadRepository.buscarComunidades(filtro);
     }
 }

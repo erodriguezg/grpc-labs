@@ -13,6 +13,10 @@ public class FiltroBuscarComunidadDTO {
 
     private Integer idComuna;
 
+    private Integer idProvincia;
+
+    private Integer idRegion;
+
     private String nombre;
 
     private String direccion;

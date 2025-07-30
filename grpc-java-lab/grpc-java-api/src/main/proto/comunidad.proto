@@ -1,44 +1,44 @@
 syntax = "proto3";
-package services.comunidad;
+package grpc.comunidad;
 
-option java_package = "com.github.erodriguezg.grpcjavalab.api.proto";
+option java_package = "com.github.erodriguezg.grpcjavalab.api.grpc";
 option java_multiple_files = true;
-option java_outer_classname = "ComunidadServiceProto";
+option java_outer_classname = "ComunidadServiceGrpcOuter";
 
-import "google/protobuf/timestamp.proto";
-
-// DTO usado como filtro
-message FiltroBuscarComunidad {
-  string id_comunidad = 1;
-  int32 id_comunidad_tipo = 2;
-  int32 id_comuna = 3;
-  string nombre = 4;
-  string direccion = 5;
-  int32 page_size = 6;
-  int32 page_number = 7;
+message BuscarComunidadesRequestMsg {
+    string id_comunidad = 1;
+    int32 id_comunidad_tipo = 2;
+    int32 id_comuna = 3;
+    int32 id_provincia = 4;
+    int32 id_region = 5;
+    string nombre = 6;
+    string direccion = 7;
+    int32 page_size = 8;
+    int32 page_number = 9;
 }
 
-// Entidad Comunidad
-message Comunidad {
-  string id_comunidad = 1;
-  int32 comunidad_tipo_id = 2;
-  int32 comuna_id = 3;
-  string nombre = 4;
-  string direccion = 5;
-  google.protobuf.Timestamp fecha_creacion = 6;
-  google.protobuf.Timestamp fecha_modificacion = 7;
+message ComunidadMsg {
+    string id = 1;
+    string nombre = 2;
+    string direccion = 3;
+    int32 tipo_id = 4;
+    string tipo_nombre = 5;
+    int32 comuna_id = 6;
+    string comuna_nombre = 7;
+    int32 provincia_id = 8;
+    string provincia_nombre = 9;
+    int32 region_id = 10;
+    string region_nombre = 11;
 }
 
-// Página de comunidades
-message ComunidadPage {
-  repeated Comunidad items = 1;
+message BuscarComunidadesResponseMsg {
+  repeated ComunidadMsg items = 1;
   int32 page_number = 2;
   int32 page_size = 3;
   int32 total_pages = 4;
   int64 total_elements = 5;
 }
 
-// Servicio
 service ComunidadService {
-  rpc BuscarComunidades(FiltroBuscarComunidad) returns (ComunidadPage);
+  rpc BuscarComunidades(BuscarComunidadesRequestMsg) returns (BuscarComunidadesResponseMsg);
 }
