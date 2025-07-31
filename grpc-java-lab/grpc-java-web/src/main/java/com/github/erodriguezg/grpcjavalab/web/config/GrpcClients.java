@@ -1,5 +1,6 @@
 package com.github.erodriguezg.grpcjavalab.web.config;
 
+import com.github.erodriguezg.grpcjavalab.api.grpc.ComunidadServiceGrpc;
 import com.github.erodriguezg.grpcjavalab.api.proto.UsuarioServiceGrpc;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.context.annotation.Bean;
@@ -11,9 +12,17 @@ public class GrpcClients {
     @GrpcClient("usuario-service")
     private UsuarioServiceGrpc.UsuarioServiceBlockingStub usuarioServiceStub;
 
+    @GrpcClient("comunidad-service")
+    private ComunidadServiceGrpc.ComunidadServiceBlockingStub comunidadServiceStub;
+
     @Bean
     public UsuarioServiceGrpc.UsuarioServiceBlockingStub usuarioServiceGrpc() {
         return usuarioServiceStub;
+    }
+
+    @Bean
+    public ComunidadServiceGrpc.ComunidadServiceBlockingStub comunidadServiceGrpc() {
+        return comunidadServiceStub;
     }
 
 }

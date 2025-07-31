@@ -48,6 +48,22 @@
     <!-- Divider -->
     <hr class="sidebar-divider">
 
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseComunidad"
+           aria-expanded="true" aria-controls="collapseComunidad">
+            <i class="fas fa-fw fa-building"></i>
+            <span>Comunidad</span>
+        </a>
+        <div id="collapseComunidad" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" th:href="@{/comunidad/gestionar}">Gestionar</a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
     <!-- Heading -->
     <div class="sidebar-heading">
         Addons

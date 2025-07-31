@@ -22,9 +22,12 @@ spring:
 
 grpc:
   client:
+    comunidad-service:
+      address: ${GRPC_SERVER_COMMON_ENDPOINT:static://localhost:9091}
+      negotiationType: ${GRPC_SERVER_COMMON_NEGOTIATION_TYPE:plaintext}
     usuario-service:
-      address: ${GRPC_USUARIO_SERVICE_ENDPOINT:static://localhost:9091}
-      negotiationType: ${GRPC_USUARIO_SERVICE_NEGOTIATION_TYPE:plaintext}
+      address: ${GRPC_SERVER_COMMON_ENDPOINT:static://localhost:9091}
+      negotiationType: ${GRPC_SERVER_COMMON_NEGOTIATION_TYPE:plaintext}
 
 logging:
   level:
