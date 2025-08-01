@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{main-layout/layout}" lang="es">
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{main-layout/layout}" lang="es">
 
 <body>
 
@@ -10,16 +11,47 @@
 </head>
 
 <!-- Contenido que se inyectará en layout.html -->
-<div layout:fragment="content" >
+<div layout:fragment="content">
 
     <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Comunidades</h1>
-    </div>
+    <h1 class="h3 mb-2 text-gray-800">Gestionar Comunidades</h1>
+    <p class="mb-4">Aqui puede gestionar las comunidades del sistema.</p>
 
-    <!-- Content Row -->
-    <div class="row">
-
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Comunidades</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Tipo</th>
+                        <th scope="col">Dirección</th>
+                        <th scope="col">Comuna</th>
+                        <th scope="col">Provincia</th>
+                        <th scope="col">Region</th>
+                        <th scope="col">Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="comunidad : ${comunidades}"
+                        th:data-id-comunidad="${comunidad.id}">
+                        <th scope="row" th:text="${comunidad.idAbreviado}" th:title="${comunidad.id}"></th>
+                        <td th:text="${comunidad.nombre}"></td>
+                        <td th:text="${comunidad.tipoNombre}"></td>
+                        <td th:text="${comunidad.direccion}"></td>
+                        <td th:text="${comunidad.comunaNombre}"></td>
+                        <td th:text="${comunidad.provinciaNombre}"></td>
+                        <td th:text="${comunidad.regionNombre}"></td>
+                        <td></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
 </div>

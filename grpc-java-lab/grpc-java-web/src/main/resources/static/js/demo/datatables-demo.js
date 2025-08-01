@@ -1,4 +1,4 @@
-// Call the dataTables jQuery plugin
+let table;
 $(document).ready(function() {
-  $('#dataTable').DataTable();
+    table = new DataTable('#dataTable');
 });

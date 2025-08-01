@@ -23,6 +23,8 @@
     <!-- Custom styles for this template-->
     <link th:href="@{/css/sb-admin-2.min.css}" rel="stylesheet">
 
+    <th:block layout:fragment="page-head-ext"></th:block>
+
 </head>
 
 <body id="page-top">
@@ -45,7 +47,7 @@
 <th:block layout:insert="main-layout/logout-modal.html" />
 
 <!-- Bootstrap core JavaScript-->
-<script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+<script th:src="@{/vendor/jquery/3.7.1/jquery.min.js}"></script>
 <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
 
 <!-- Core plugin JavaScript-->

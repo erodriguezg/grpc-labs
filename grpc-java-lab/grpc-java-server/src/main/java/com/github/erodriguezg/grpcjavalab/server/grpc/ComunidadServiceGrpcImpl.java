@@ -38,13 +38,15 @@ public class ComunidadServiceGrpcImpl extends ComunidadServiceGrpc.ComunidadServ
 
     private FiltroBuscarComunidadDTO toFiltroDTO(BuscarComunidadesRequestMsg request) {
         var filtroDTO = new FiltroBuscarComunidadDTO();
-        filtroDTO.setIdComunidad(UUID.fromString(request.getIdComunidad()));
-        filtroDTO.setDireccion(request.getDireccion());
-        filtroDTO.setNombre(request.getNombre());
-        filtroDTO.setIdComunidadTipo(request.getIdComunidadTipo());
-        filtroDTO.setIdComuna(request.getIdComuna());
-        filtroDTO.setIdProvincia(request.getIdProvincia());
-        filtroDTO.setIdRegion(request.getIdRegion());
+        if (!request.getIdComunidad().isBlank()) {
+            filtroDTO.setIdComunidad(UUID.fromString(request.getIdComunidad()));
+        }
+        if (!request.getDireccion().isBlank()) filtroDTO.setDireccion(request.getDireccion());
+        if (!request.getNombre().isBlank()) filtroDTO.setNombre(request.getNombre());
+        if (request.getIdComunidadTipo() != 0) filtroDTO.setIdComunidadTipo(request.getIdComunidadTipo());
+        if (request.getIdComuna() != 0) filtroDTO.setIdComuna(request.getIdComuna());
+        if (request.getIdProvincia() != 0) filtroDTO.setIdProvincia(request.getIdProvincia());
+        if (request.getIdRegion() != 0) filtroDTO.setIdRegion(request.getIdRegion());
         filtroDTO.setPageNumber(request.getPageNumber());
         filtroDTO.setPageSize(request.getPageSize());
         return filtroDTO;
@@ -57,8 +59,7 @@ public class ComunidadServiceGrpcImpl extends ComunidadServiceGrpc.ComunidadServ
         builder.setTotalPages(comunidadPage.getTotalPages());
         builder.setTotalElements(comunidadPage.getTotalElements());
 
-        for (int i = 0; i < comunidadPage.getContent().size(); i++) {
-            var dto = comunidadPage.getContent().get(i);
+        comunidadPage.get().forEach(dto -> {
             var comunidadMsg = ComunidadMsg.newBuilder()
                     .setComunaId(dto.getComunaId())
                     .setComunaNombre(dto.getComunaNombre())
@@ -72,9 +73,8 @@ public class ComunidadServiceGrpcImpl extends ComunidadServiceGrpc.ComunidadServ
                     .setTipoId(dto.getTipoId())
                     .setTipoNombre(dto.getTipoNombre())
                     .build();
-
-            builder.setItems(i, comunidadMsg);
-        }
+            builder.addItems(comunidadMsg);
+        });
 
         return builder.build();
     }
