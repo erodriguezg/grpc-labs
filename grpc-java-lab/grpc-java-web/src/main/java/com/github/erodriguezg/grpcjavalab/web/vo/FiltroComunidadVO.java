@@ -21,8 +21,6 @@ public class FiltroComunidadVO {
 
     private int regionId;
 
-    private int pageNumber;
-
-    private int pageSize;
+    private PaginatedVO paginated;
 
 }

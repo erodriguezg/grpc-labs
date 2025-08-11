@@ -5,12 +5,16 @@ import com.github.erodriguezg.grpcjavalab.api.grpc.BuscarComunidadesResponseMsg;
 import com.github.erodriguezg.grpcjavalab.api.grpc.ComunidadServiceGrpc;
 import com.github.erodriguezg.grpcjavalab.web.vo.ComunidadVO;
 import com.github.erodriguezg.grpcjavalab.web.vo.FiltroComunidadVO;
+import com.github.erodriguezg.grpcjavalab.web.vo.PaginatedVO;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.ArrayList;
@@ -32,29 +36,50 @@ public class GestionarComunidadController {
     @GetMapping("/gestionar")
     public String irGestionar(Model model) {
 
-        var filtro = FiltroComunidadVO.builder()
+        var paginated = PaginatedVO.builder()
                 .pageNumber(0)
                 .pageSize(PAGE_SIZE_COMUNIDADES)
                 .build();
-        var comunidades = buscarComunidades(filtro);
-        model.addAttribute("filtro", filtro);
-        model.addAttribute("comunidades", comunidades);
+
+        var filtro = FiltroComunidadVO.builder()
+                .paginated(paginated)
+                .build();
+        buscar(filtro, model);
         return "comunidad/gestionar.html";
     }
 
-    public String buscar(FiltroComunidadVO filtro, Model model) {
-        var comunidades = buscarComunidades(filtro);
-        model.addAttribute("filtro", filtro);
-        model.addAttribute("comunidades", comunidades);
-        return "comunidad/gestionar.html :: filterAndTable";
+    @PostMapping("/buscar")
+    public String buscarEndpoint(@ModelAttribute FiltroComunidadVO filtro, BindingResult results, Model model) {
+        if (results.hasErrors()) {
+            return "comunidad/gestionar.html :: filters";
+        } else {
+            buscar(filtro, model);
+            return "comunidad/gestionar.html :: filterAndTable";
+        }
     }
 
     // privates
 
-    private List<ComunidadVO> buscarComunidades(FiltroComunidadVO filtro) {
+    private void buscar(FiltroComunidadVO filtro, Model model) {
+        var responseMsg = buscarCall(filtro);
+        var comunidades = toComunidadVOList(responseMsg);
+
+        var paginated = PaginatedVO.builder()
+                .pageNumber(responseMsg.getPageNumber())
+                .pageSize(responseMsg.getPageSize())
+                .totalPages(responseMsg.getTotalPages())
+                .build();
+
+        filtro.setPaginated(paginated);
+
+        model.addAttribute("filtro", filtro);
+        model.addAttribute("comunidades", comunidades);
+    }
+
+    private BuscarComunidadesResponseMsg buscarCall(FiltroComunidadVO filtro) {
         var requestMsg = BuscarComunidadesRequestMsg.newBuilder()
-                .setPageNumber(filtro.getPageNumber())
-                .setPageSize(filtro.getPageSize())
+                .setPageNumber(filtro.getPaginated().getPageNumber())
+                .setPageSize(filtro.getPaginated().getPageSize())
                 .setDireccion(trimOrBlank(filtro.getDireccion()))
                 .setIdComunidad(trimOrBlank(filtro.getId()))
                 .setIdComuna(filtro.getComunaId())
@@ -63,8 +88,7 @@ public class GestionarComunidadController {
                 .setIdRegion(filtro.getRegionId())
                 .setNombre(trimOrBlank(filtro.getNombre()))
                 .build();
-        var responseMsg = comunidadServiceGrpc.buscarComunidades(requestMsg);
-        return toComunidadVOList(responseMsg);
+        return comunidadServiceGrpc.buscarComunidades(requestMsg);
     }
 
     private List<ComunidadVO> toComunidadVOList(BuscarComunidadesResponseMsg responseMsg) {

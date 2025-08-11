@@ -22,90 +22,119 @@
             <h6 class="m-0 font-weight-bold text-primary">Comunidades</h6>
         </div>
         <div class="card-body" th:fragment="filterAndTable">
-            <div class="row">
-                <div class="pl-3 mb-3">
-                    <a href="#filtrosWrapper" data-toggle="collapse" aria-expanded="false" aria-controls="filtrosWrapper">
-                        <i class="fa fa-filter mr-1"></i>Filtros
-                    </a>
-                </div>
-            </div>
-            <div id="filtrosWrapper" class="row collapse" th:fragment="filter">
-                <form class="pl-3 pr-3 mb-5 w-100 small">
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="filtroId">Id Comunidad</label>
-                            <input type="text" name="id" class="form-control" id="filtroId">
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="filtroNombre">Nombre Comunidad</label>
-                            <input type="password" name="nombre" class="form-control" id="filtroNombre">
-                        </div>
+            <form th:object="${filtro}">
+
+                <input type="hidden" th:field="*{paginated.pageSize}" />
+                <input type="hidden" th:field="*{paginated.pageNumber}" />
+                <input type="hidden" th:field="*{paginated.totalPages}" />
+
+                <div class="row">
+                    <div class="pl-3 mb-3">
+                        <a href="#filtrosWrapper" data-toggle="collapse" aria-expanded="false"
+                           aria-controls="filtrosWrapper">
+                            <i class="fa fa-filter mr-1"></i>Filtros
+                        </a>
                     </div>
-
-
-                    <div class="form-row">
-                        <div class="form-group col-md-12">
-                            <label for="filtroDireccion">Dirección</label>
-                            <input type="text" name="direccion" class="form-control" id="filtroDireccion">
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label for="filtroRegion">Región</label>
-                            <select id="filtroRegion" name="regionId" class="form-control">
-                                <option selected="">Choose...</option>
-                                <option>...</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group col-md-4">
-                            <label for="filtroProvincia">Provincia</label>
-                            <select id="filtroProvincia" name="provinciaId" class="form-control">
-                                <option selected="">Choose...</option>
-                                <option>...</option>
-                            </select>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label for="filtroComuna">Comuna</label>
-                            <select id="filtroComuna" name="comunaId" class="form-control" >
-                                <option selected="">Choose...</option>
-                                <option>...</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <button type="button" class="btn btn-secondary">Limpiar Filtros</button>
-                </form>
-            </div>
-            <div class="row">
-                <div class="table-responsive pl-3 pr-3" th:fragment="table">
-                    <table class="table table-hover">
-                        <thead>
-                        <tr>
-                            <th scope="col">Id</th>
-                            <th scope="col">Nombre</th>
-                            <th scope="col">Tipo</th>
-                            <th scope="col">Dirección</th>
-                            <th scope="col">Comuna</th>
-                            <th scope="col">Provincia</th>
-                            <th scope="col">Region</th>
-                            <th scope="col">Acciones</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="comunidad : ${comunidades}"
-                            th:data-id-comunidad="${comunidad.id}">
-                            <th scope="row" th:text="${comunidad.idAbreviado}" th:title="${comunidad.id}"></th>
-                            <td th:text="${comunidad.nombre}"></td>
-                            <td th:text="${comunidad.tipoNombre}"></td>
-                            <td th:text="${comunidad.direccion}"></td>
-                            <td th:text="${comunidad.comunaNombre}"></td>
-                            <td th:text="${comunidad.provinciaNombre}"></td>
-                            <td th:text="${comunidad.regionNombre}"></td>
-                            <td></td>
-                        </tr>
-                        </tbody>
-                    </table>
                 </div>
-            </div>
+                <div id="filtrosWrapper" class="row collapse" th:fragment="filter">
+                    <div class="pl-3 pr-3 mb-5 w-100 small">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="filtroId">Id Comunidad</label>
+                                <input type="text" name="id" class="form-control" id="filtroId">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="filtroNombre">Nombre Comunidad</label>
+                                <input type="password" name="nombre" class="form-control" id="filtroNombre">
+                            </div>
+                        </div>
+
+
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                <label for="filtroDireccion">Dirección</label>
+                                <input type="text" name="direccion" class="form-control" id="filtroDireccion">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="filtroRegion">Región</label>
+                                <select id="filtroRegion" name="regionId" class="form-control">
+                                    <option selected="">Choose...</option>
+                                    <option>...</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-4">
+                                <label for="filtroProvincia">Provincia</label>
+                                <select id="filtroProvincia" name="provinciaId" class="form-control">
+                                    <option selected="">Choose...</option>
+                                    <option>...</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="filtroComuna">Comuna</label>
+                                <select id="filtroComuna" name="comunaId" class="form-control">
+                                    <option selected="">Choose...</option>
+                                    <option>...</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-secondary">Limpiar Filtros</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="table-responsive pl-3 pr-3" th:fragment="table">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th scope="col">Id</th>
+                                <th scope="col">Nombre</th>
+                                <th scope="col">Tipo</th>
+                                <th scope="col">Dirección</th>
+                                <th scope="col">Comuna</th>
+                                <th scope="col">Provincia</th>
+                                <th scope="col">Region</th>
+                                <th scope="col">Acciones</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="comunidad : ${comunidades}"
+                                th:data-id-comunidad="${comunidad.id}">
+                                <th scope="row" th:text="${comunidad.idAbreviado}" th:title="${comunidad.id}"></th>
+                                <td th:text="${comunidad.nombre}"></td>
+                                <td th:text="${comunidad.tipoNombre}"></td>
+                                <td th:text="${comunidad.direccion}"></td>
+                                <td th:text="${comunidad.comunaNombre}"></td>
+                                <td th:text="${comunidad.provinciaNombre}"></td>
+                                <td th:text="${comunidad.regionNombre}"></td>
+                                <td></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-auto ml-auto pr-3">
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination">
+                                <li class="page-item">
+                                    <a class="page-link" href="#" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 
