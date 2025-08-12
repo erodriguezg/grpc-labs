@@ -24,9 +24,9 @@
         <div class="card-body" th:fragment="filterAndTable">
             <form th:object="${filtro}">
 
-                <input type="hidden" th:field="*{paginated.pageSize}" />
-                <input type="hidden" th:field="*{paginated.pageNumber}" />
-                <input type="hidden" th:field="*{paginated.totalPages}" />
+                <input type="hidden" th:field="*{paginated.pageSize}"/>
+                <input type="hidden" th:field="*{paginated.pageNumber}"/>
+                <input type="hidden" th:field="*{paginated.totalPages}"/>
 
                 <div class="row">
                     <div class="pl-3 mb-3">
@@ -113,23 +113,38 @@
                         </table>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" th:if="${filtro.paginated.totalPages > 1}">
                     <div class="col-auto ml-auto pr-3">
-                        <nav aria-label="Page navigation">
+                        <nav>
                             <ul class="pagination">
-                                <li class="page-item">
-                                    <a class="page-link" href="#" aria-label="Previous">
-                                        <span aria-hidden="true">&laquo;</span>
-                                    </a>
+
+                                <!-- Botón anterior -->
+                                <li class="page-item"
+                                    th:classappend="${filtro.paginated.pageNumber == 0} ? 'disabled'">
+                                    <a class="page-link"
+                                       th:href="@{/mi-url(page=${filtro.paginated.pageNumber - 1}, size=${filtro.paginated.pageSize})}">&laquo;</a>
                                 </li>
-                                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#" aria-label="Next">
-                                        <span aria-hidden="true">&raquo;</span>
-                                    </a>
+
+                                <!-- Números de página -->
+                                <th:block
+                                        th:with="start=${T(java.lang.Math).max(1, filtro.paginated.pageNumber - 3)},
+                     end=${T(java.lang.Math).min(filtro.paginated.totalPages, filtro.paginated.pageNumber + 3)}">
+
+                                    <li class="page-item"
+                                        th:each="p : ${#numbers.sequence(start, end)}"
+                                        th:classappend="${p == filtro.paginated.pageNumber + 1} ? 'active'">
+                                        <a class="page-link" th:text="${p}"
+                                           th:href="@{/mi-url(page=${p}, size=${filtro.paginated.pageSize})}"></a>
+                                    </li>
+                                </th:block>
+
+                                <!-- Botón siguiente -->
+                                <li class="page-item"
+                                    th:classappend="${(filtro.paginated.pageNumber + 1) == filtro.paginated.totalPages} ? 'disabled'">
+                                    <a class="page-link"
+                                       th:href="@{/mi-url(page=${filtro.paginated.pageNumber + 1}, size=${filtro.paginated.pageSize})}">&raquo;</a>
                                 </li>
+
                             </ul>
                         </nav>
                     </div>

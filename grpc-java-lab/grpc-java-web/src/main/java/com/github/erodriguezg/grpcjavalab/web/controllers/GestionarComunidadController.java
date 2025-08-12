@@ -29,7 +29,7 @@ public class GestionarComunidadController {
 
     private final static Logger log = LoggerFactory.getLogger(GestionarComunidadController.class);
 
-    private static final int PAGE_SIZE_COMUNIDADES = 10;
+    private static final int PAGE_SIZE_COMUNIDADES = 1;
 
     private final ComunidadServiceGrpc.ComunidadServiceBlockingStub comunidadServiceGrpc;
 
