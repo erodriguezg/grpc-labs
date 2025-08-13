@@ -1,10 +1,14 @@
 package com.github.erodriguezg.grpcjavalab.web.vo;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class FiltroComunidadVO {
 
     private String id;
@@ -13,13 +17,13 @@ public class FiltroComunidadVO {
 
     private String nombre;
 
-    private int tipoId;
+    private Integer tipoId;
 
-    private int comunaId;
+    private Integer comunaId;
 
-    private int provinciaId;
+    private Integer provinciaId;
 
-    private int regionId;
+    private Integer regionId;
 
     private PaginatedVO paginated;
 

@@ -21,13 +21,19 @@
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Comunidades</h6>
         </div>
-        <div class="card-body" th:fragment="filterAndTable">
-            <form th:object="${filtro}">
+        <div class="card-body" id="filterAndTable" th:fragment="filterAndTable">
+            <!-- El form envía filtros + paginación por POST -->
+            <form th:object="${filtro}"
+                  data-hx-post="@{/comunidad/buscar}"
+                  data-hx-target="'#filterAndTable'"
+                  data-hx-swap="outerHTML" >
 
+                <!-- Paginated hidden -->
                 <input type="hidden" th:field="*{paginated.pageSize}"/>
-                <input type="hidden" th:field="*{paginated.pageNumber}"/>
                 <input type="hidden" th:field="*{paginated.totalPages}"/>
+                <!-- NOTA: pageNumber lo enviaremos con los botones de paginación -->
 
+                <!-- Filtros -->
                 <div class="row">
                     <div class="pl-3 mb-3">
                         <a href="#filtrosWrapper" data-toggle="collapse" aria-expanded="false"
@@ -36,52 +42,61 @@
                         </a>
                     </div>
                 </div>
+
                 <div id="filtrosWrapper" class="row collapse" th:fragment="filter">
                     <div class="pl-3 pr-3 mb-5 w-100 small">
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="filtroId">Id Comunidad</label>
-                                <input type="text" name="id" class="form-control" id="filtroId">
+                                <input type="text" name="id" class="form-control" id="filtroId" th:value="*{id}">
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="filtroNombre">Nombre Comunidad</label>
-                                <input type="password" name="nombre" class="form-control" id="filtroNombre">
+                                <input type="text" name="nombre" class="form-control" id="filtroNombre"
+                                       th:value="*{nombre}">
                             </div>
                         </div>
-
 
                         <div class="form-row">
                             <div class="form-group col-md-12">
                                 <label for="filtroDireccion">Dirección</label>
-                                <input type="text" name="direccion" class="form-control" id="filtroDireccion">
+                                <input type="text" name="direccion" class="form-control" id="filtroDireccion"
+                                       th:value="*{direccion}">
                             </div>
+
                             <div class="form-group col-md-4">
                                 <label for="filtroRegion">Región</label>
-                                <select id="filtroRegion" name="regionId" class="form-control">
-                                    <option selected="">Choose...</option>
-                                    <option>...</option>
+                                <select id="filtroRegion" name="regionId" class="form-control" th:value="*{regionId}">
+                                    <option value="">Choose...</option>
+                                    <!-- opciones -->
                                 </select>
                             </div>
 
                             <div class="form-group col-md-4">
                                 <label for="filtroProvincia">Provincia</label>
-                                <select id="filtroProvincia" name="provinciaId" class="form-control">
-                                    <option selected="">Choose...</option>
-                                    <option>...</option>
+                                <select id="filtroProvincia" name="provinciaId" class="form-control"
+                                        th:value="*{provinciaId}">
+                                    <option value="">Choose...</option>
+                                    <!-- opciones -->
                                 </select>
                             </div>
+
                             <div class="form-group col-md-4">
                                 <label for="filtroComuna">Comuna</label>
-                                <select id="filtroComuna" name="comunaId" class="form-control">
-                                    <option selected="">Choose...</option>
-                                    <option>...</option>
+                                <select id="filtroComuna" name="comunaId" class="form-control" th:value="*{comunaId}">
+                                    <option value="">Choose...</option>
+                                    <!-- opciones -->
                                 </select>
                             </div>
                         </div>
 
-                        <button type="button" class="btn btn-secondary">Limpiar Filtros</button>
+                        <!-- Botón de aplicar filtros (POST) -->
+                        <button type="submit" class="btn btn-primary">Aplicar filtros</button>
+                        <button type="reset" class="btn btn-secondary ml-2">Limpiar Filtros</button>
                     </div>
                 </div>
+
+                <!-- Tabla -->
                 <div class="row">
                     <div class="table-responsive pl-3 pr-3" th:fragment="table">
                         <table class="table table-hover">
@@ -98,8 +113,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr th:each="comunidad : ${comunidades}"
-                                th:data-id-comunidad="${comunidad.id}">
+                            <tr th:each="comunidad : ${comunidades}" th:data-id-comunidad="${comunidad.id}">
                                 <th scope="row" th:text="${comunidad.idAbreviado}" th:title="${comunidad.id}"></th>
                                 <td th:text="${comunidad.nombre}"></td>
                                 <td th:text="${comunidad.tipoNombre}"></td>
@@ -113,6 +127,8 @@
                         </table>
                     </div>
                 </div>
+
+                <!-- Paginación -->
                 <div class="row" th:if="${filtro.paginated.totalPages > 1}">
                     <div class="col-auto ml-auto pr-3">
                         <nav>
@@ -120,35 +136,50 @@
 
                                 <!-- Botón anterior -->
                                 <li class="page-item"
-                                    th:classappend="${filtro.paginated.pageNumber == 0} ? 'disabled'">
-                                    <a class="page-link"
-                                       th:href="@{/mi-url(page=${filtro.paginated.pageNumber - 1}, size=${filtro.paginated.pageSize})}">&laquo;</a>
+                                    th:classappend="${filtro.paginated.pageNumber == 0} ? ' disabled'">
+                                    <button type="submit"
+                                            class="page-link btn btn-link p-0"
+                                            name="paginated.pageNumber"
+                                            th:value="${filtro.paginated.pageNumber - 1}"
+                                            th:disabled="${filtro.paginated.pageNumber == 0}">
+                                        &laquo;
+                                    </button>
                                 </li>
 
                                 <!-- Números de página -->
-                                <th:block
-                                        th:with="start=${T(java.lang.Math).max(1, filtro.paginated.pageNumber - 3)},
-                     end=${T(java.lang.Math).min(filtro.paginated.totalPages, filtro.paginated.pageNumber + 3)}">
+                                <th:block th:with="
+                start=${T(java.lang.Math).max(1, filtro.paginated.pageNumber - 3)},
+                end=${T(java.lang.Math).min(filtro.paginated.totalPages, filtro.paginated.pageNumber + 3)}">
 
                                     <li class="page-item"
                                         th:each="p : ${#numbers.sequence(start, end)}"
-                                        th:classappend="${p == filtro.paginated.pageNumber + 1} ? 'active'">
-                                        <a class="page-link" th:text="${p}"
-                                           th:href="@{/mi-url(page=${p}, size=${filtro.paginated.pageSize})}"></a>
+                                        th:classappend="${p == filtro.paginated.pageNumber + 1} ? ' active'">
+                                        <button type="submit"
+                                                class="page-link btn btn-link p-0"
+                                                name="paginated.pageNumber"
+                                                th:value="${p - 1}">
+                                            <span th:text="${p}">1</span>
+                                        </button>
                                     </li>
                                 </th:block>
 
                                 <!-- Botón siguiente -->
                                 <li class="page-item"
-                                    th:classappend="${(filtro.paginated.pageNumber + 1) == filtro.paginated.totalPages} ? 'disabled'">
-                                    <a class="page-link"
-                                       th:href="@{/mi-url(page=${filtro.paginated.pageNumber + 1}, size=${filtro.paginated.pageSize})}">&raquo;</a>
+                                    th:classappend="${(filtro.paginated.pageNumber + 1) == filtro.paginated.totalPages} ? ' disabled'">
+                                    <button type="submit"
+                                            class="page-link btn btn-link p-0"
+                                            name="paginated.pageNumber"
+                                            th:value="${filtro.paginated.pageNumber + 1}"
+                                            th:disabled="${(filtro.paginated.pageNumber + 1) == filtro.paginated.totalPages}">
+                                        &raquo;
+                                    </button>
                                 </li>
 
                             </ul>
                         </nav>
                     </div>
                 </div>
+
             </form>
         </div>
     </div>

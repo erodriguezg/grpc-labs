@@ -29,13 +29,12 @@ public class GestionarComunidadController {
 
     private final static Logger log = LoggerFactory.getLogger(GestionarComunidadController.class);
 
-    private static final int PAGE_SIZE_COMUNIDADES = 1;
+    private static final int PAGE_SIZE_COMUNIDADES = 10;
 
     private final ComunidadServiceGrpc.ComunidadServiceBlockingStub comunidadServiceGrpc;
 
     @GetMapping("/gestionar")
     public String irGestionar(Model model) {
-
         var paginated = PaginatedVO.builder()
                 .pageNumber(0)
                 .pageSize(PAGE_SIZE_COMUNIDADES)
@@ -44,16 +43,21 @@ public class GestionarComunidadController {
         var filtro = FiltroComunidadVO.builder()
                 .paginated(paginated)
                 .build();
+
         buscar(filtro, model);
-        return "comunidad/gestionar.html";
+        return "comunidad/gestionar.html"; // vista completa en la primera carga
     }
 
     @PostMapping("/buscar")
-    public String buscarEndpoint(@ModelAttribute FiltroComunidadVO filtro, BindingResult results, Model model) {
+    public String buscarEndpoint(@ModelAttribute FiltroComunidadVO filtro,
+                                 BindingResult results,
+                                 Model model) {
         if (results.hasErrors()) {
-            return "comunidad/gestionar.html :: filters";
+            // si quieres devolver solo el fragmento de filtros
+            return "comunidad/gestionar.html :: filter";
         } else {
             buscar(filtro, model);
+            // devolvemos SOLO el fragmento que reemplaza HTMX
             return "comunidad/gestionar.html :: filterAndTable";
         }
     }
@@ -82,10 +86,10 @@ public class GestionarComunidadController {
                 .setPageSize(filtro.getPaginated().getPageSize())
                 .setDireccion(trimOrBlank(filtro.getDireccion()))
                 .setIdComunidad(trimOrBlank(filtro.getId()))
-                .setIdComuna(filtro.getComunaId())
-                .setIdComunidadTipo(filtro.getTipoId())
-                .setIdProvincia(filtro.getProvinciaId())
-                .setIdRegion(filtro.getRegionId())
+                .setIdComuna(filtro.getComunaId() != null ? filtro.getComunaId() : 0)
+                .setIdComunidadTipo(filtro.getTipoId() != null ? filtro.getTipoId() : 0)
+                .setIdProvincia(filtro.getProvinciaId() != null ? filtro.getProvinciaId() : 0)
+                .setIdRegion(filtro.getRegionId() != null ? filtro.getRegionId() : 0)
                 .setNombre(trimOrBlank(filtro.getNombre()))
                 .build();
         return comunidadServiceGrpc.buscarComunidades(requestMsg);
