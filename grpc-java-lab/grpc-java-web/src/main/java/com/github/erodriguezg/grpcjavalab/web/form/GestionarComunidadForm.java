@@ -1,4 +1,4 @@
-package com.github.erodriguezg.grpcjavalab.web.vo;
+package com.github.erodriguezg.grpcjavalab.web.form;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FiltroComunidadVO {
+public class GestionarComunidadForm {
 
     private String id;
 
@@ -25,6 +25,8 @@ public class FiltroComunidadVO {
 
     private Integer regionId;
 
-    private PaginatedVO paginated;
+    private PaginatedForm paginated;
+
+    private boolean verFiltros;
 
 }

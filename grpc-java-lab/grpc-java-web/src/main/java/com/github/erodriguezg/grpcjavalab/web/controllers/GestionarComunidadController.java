@@ -3,9 +3,9 @@ package com.github.erodriguezg.grpcjavalab.web.controllers;
 import com.github.erodriguezg.grpcjavalab.api.grpc.BuscarComunidadesRequestMsg;
 import com.github.erodriguezg.grpcjavalab.api.grpc.BuscarComunidadesResponseMsg;
 import com.github.erodriguezg.grpcjavalab.api.grpc.ComunidadServiceGrpc;
-import com.github.erodriguezg.grpcjavalab.web.vo.ComunidadVO;
-import com.github.erodriguezg.grpcjavalab.web.vo.FiltroComunidadVO;
-import com.github.erodriguezg.grpcjavalab.web.vo.PaginatedVO;
+import com.github.erodriguezg.grpcjavalab.web.view.ComunidadView;
+import com.github.erodriguezg.grpcjavalab.web.form.GestionarComunidadForm;
+import com.github.erodriguezg.grpcjavalab.web.form.PaginatedForm;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,28 +35,29 @@ public class GestionarComunidadController {
 
     @GetMapping("/gestionar")
     public String irGestionar(Model model) {
-        var paginated = PaginatedVO.builder()
+        var paginated = PaginatedForm.builder()
                 .pageNumber(0)
                 .pageSize(PAGE_SIZE_COMUNIDADES)
                 .build();
 
-        var filtro = FiltroComunidadVO.builder()
+        var form = GestionarComunidadForm.builder()
                 .paginated(paginated)
+                .verFiltros(false)
                 .build();
 
-        buscar(filtro, model);
+        buscar(form, model);
         return "comunidad/gestionar.html"; // vista completa en la primera carga
     }
 
     @PostMapping("/buscar")
-    public String buscarEndpoint(@ModelAttribute FiltroComunidadVO filtro,
+    public String buscarEndpoint(@ModelAttribute GestionarComunidadForm form,
                                  BindingResult results,
                                  Model model) {
         if (results.hasErrors()) {
             // si quieres devolver solo el fragmento de filtros
             return "comunidad/gestionar.html :: filter";
         } else {
-            buscar(filtro, model);
+            buscar(form, model);
             // devolvemos SOLO el fragmento que reemplaza HTMX
             return "comunidad/gestionar.html :: filterAndTable";
         }
@@ -64,53 +65,53 @@ public class GestionarComunidadController {
 
     // privates
 
-    private void buscar(FiltroComunidadVO filtro, Model model) {
-        var responseMsg = buscarCall(filtro);
-        var comunidades = toComunidadVOList(responseMsg);
+    private void buscar(GestionarComunidadForm form, Model model) {
+        var responseMsg = buscarCall(form);
+        var comunidades = toComunidadViewList(responseMsg);
 
-        var paginated = PaginatedVO.builder()
+        var paginated = PaginatedForm.builder()
                 .pageNumber(responseMsg.getPageNumber())
                 .pageSize(responseMsg.getPageSize())
                 .totalPages(responseMsg.getTotalPages())
                 .build();
 
-        filtro.setPaginated(paginated);
+        form.setPaginated(paginated);
 
-        model.addAttribute("filtro", filtro);
+        model.addAttribute("form", form);
         model.addAttribute("comunidades", comunidades);
     }
 
-    private BuscarComunidadesResponseMsg buscarCall(FiltroComunidadVO filtro) {
+    private BuscarComunidadesResponseMsg buscarCall(GestionarComunidadForm form) {
         var requestMsg = BuscarComunidadesRequestMsg.newBuilder()
-                .setPageNumber(filtro.getPaginated().getPageNumber())
-                .setPageSize(filtro.getPaginated().getPageSize())
-                .setDireccion(trimOrBlank(filtro.getDireccion()))
-                .setIdComunidad(trimOrBlank(filtro.getId()))
-                .setIdComuna(filtro.getComunaId() != null ? filtro.getComunaId() : 0)
-                .setIdComunidadTipo(filtro.getTipoId() != null ? filtro.getTipoId() : 0)
-                .setIdProvincia(filtro.getProvinciaId() != null ? filtro.getProvinciaId() : 0)
-                .setIdRegion(filtro.getRegionId() != null ? filtro.getRegionId() : 0)
-                .setNombre(trimOrBlank(filtro.getNombre()))
+                .setPageNumber(form.getPaginated().getPageNumber())
+                .setPageSize(form.getPaginated().getPageSize())
+                .setDireccion(trimOrBlank(form.getDireccion()))
+                .setIdComunidad(trimOrBlank(form.getId()))
+                .setIdComuna(form.getComunaId() != null ? form.getComunaId() : 0)
+                .setIdComunidadTipo(form.getTipoId() != null ? form.getTipoId() : 0)
+                .setIdProvincia(form.getProvinciaId() != null ? form.getProvinciaId() : 0)
+                .setIdRegion(form.getRegionId() != null ? form.getRegionId() : 0)
+                .setNombre(trimOrBlank(form.getNombre()))
                 .build();
         return comunidadServiceGrpc.buscarComunidades(requestMsg);
     }
 
-    private List<ComunidadVO> toComunidadVOList(BuscarComunidadesResponseMsg responseMsg) {
-        var comunidades = new ArrayList<ComunidadVO>();
+    private List<ComunidadView> toComunidadViewList(BuscarComunidadesResponseMsg responseMsg) {
+        var comunidades = new ArrayList<ComunidadView>();
         responseMsg.getItemsList().forEach(msg -> {
-            var vo = new ComunidadVO();
-            vo.setComunaId(msg.getComunaId());
-            vo.setComunaNombre(msg.getComunaNombre());
-            vo.setDireccion(msg.getDireccion());
-            vo.setId(msg.getId());
-            vo.setNombre(msg.getNombre());
-            vo.setProvinciaId(msg.getProvinciaId());
-            vo.setProvinciaNombre(msg.getProvinciaNombre());
-            vo.setRegionId(msg.getRegionId());
-            vo.setRegionNombre(msg.getRegionNombre());
-            vo.setTipoId(msg.getTipoId());
-            vo.setTipoNombre(msg.getTipoNombre());
-            comunidades.add(vo);
+            var view = new ComunidadView();
+            view.setComunaId(msg.getComunaId());
+            view.setComunaNombre(msg.getComunaNombre());
+            view.setDireccion(msg.getDireccion());
+            view.setId(msg.getId());
+            view.setNombre(msg.getNombre());
+            view.setProvinciaId(msg.getProvinciaId());
+            view.setProvinciaNombre(msg.getProvinciaNombre());
+            view.setRegionId(msg.getRegionId());
+            view.setRegionNombre(msg.getRegionNombre());
+            view.setTipoId(msg.getTipoId());
+            view.setTipoNombre(msg.getTipoNombre());
+            comunidades.add(view);
         });
         return comunidades;
     }

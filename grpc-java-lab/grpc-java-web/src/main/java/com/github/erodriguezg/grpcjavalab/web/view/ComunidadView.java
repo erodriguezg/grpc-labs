@@ -1,9 +1,9 @@
-package com.github.erodriguezg.grpcjavalab.web.vo;
+package com.github.erodriguezg.grpcjavalab.web.view;
 
 import lombok.Data;
 
 @Data
-public class ComunidadVO {
+public class ComunidadView {
 
     private String id;
 

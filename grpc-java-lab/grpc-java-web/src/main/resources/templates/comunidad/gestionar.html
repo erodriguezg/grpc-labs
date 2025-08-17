@@ -11,7 +11,10 @@
 </head>
 
 <!-- Contenido que se inyectará en layout.html -->
-<div layout:fragment="content">
+<div layout:fragment="content"
+     data-hx-on:htmx:after-swap="hideLoading()"
+     data-hx-on:htmx:response-error="hideLoading()"
+     data-hx-on:htmx:send-error="hideLoading()" >
 
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">Gestionar Comunidades</h1>
@@ -21,29 +24,35 @@
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Comunidades</h6>
         </div>
-        <div class="card-body" id="filterAndTable" th:fragment="filterAndTable">
+        <div class="card-body" id="filterAndTable" th:fragment="filterAndTable" >
             <!-- El form envía filtros + paginación por POST -->
-            <form th:object="${filtro}"
+            <form th:object="${form}"
                   data-hx-post="@{/comunidad/buscar}"
                   data-hx-target="'#filterAndTable'"
-                  data-hx-swap="outerHTML" >
+                  data-hx-swap="outerHTML"
+                  data-hx-on:htmx:before-request="showLoading()" >
 
-                <!-- Paginated hidden -->
                 <input type="hidden" th:field="*{paginated.pageSize}"/>
                 <input type="hidden" th:field="*{paginated.totalPages}"/>
-                <!-- NOTA: pageNumber lo enviaremos con los botones de paginación -->
+                <input type="hidden" th:field="*{verFiltros}" />
 
                 <!-- Filtros -->
                 <div class="row">
                     <div class="pl-3 mb-3">
-                        <a href="#filtrosWrapper" data-toggle="collapse" aria-expanded="false"
+                        <a href="javascript:void(0)"
+                           data-target="#filtrosWrapper"
+                           data-toggle="collapse"
+                           th:aria-expanded="*{verFiltros} ? 'true' : 'false'"
+                           th:classappend="*{!verFiltros} ? ' collapsed'"
                            aria-controls="filtrosWrapper">
                             <i class="fa fa-filter mr-1"></i>Filtros
                         </a>
                     </div>
                 </div>
 
-                <div id="filtrosWrapper" class="row collapse" th:fragment="filter">
+                <div id="filtrosWrapper" class="row collapse"
+                     th:classappend="*{verFiltros} ? ' show'"
+                     th:fragment="filter">
                     <div class="pl-3 pr-3 mb-5 w-100 small">
                         <div class="form-row">
                             <div class="form-group col-md-6">
@@ -91,8 +100,7 @@
                         </div>
 
                         <!-- Botón de aplicar filtros (POST) -->
-                        <button type="submit" class="btn btn-primary">Aplicar filtros</button>
-                        <button type="reset" class="btn btn-secondary ml-2">Limpiar Filtros</button>
+                        <button id="btnLimpiarFiltros" type="button" class="btn btn-link">Limpiar Filtros</button>
                     </div>
                 </div>
 
@@ -123,33 +131,36 @@
                                 <td th:text="${comunidad.regionNombre}"></td>
                                 <td></td>
                             </tr>
+                            <tr th:if="${comunidades == null or comunidades.empty}" >
+                                <td colspan="8" style="text-align: center;">No se encontraron comunidades</td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
                 <!-- Paginación -->
-                <div class="row" th:if="${filtro.paginated.totalPages > 1}">
+                <div class="row" th:if="${form.paginated.totalPages > 1}">
                     <div class="col-auto ml-auto pr-3">
                         <nav>
                             <ul class="pagination">
 
                                 <!-- Botón anterior -->
                                 <li class="page-item"
-                                    th:classappend="${filtro.paginated.pageNumber == 0} ? ' disabled'">
+                                    th:classappend="${form.paginated.pageNumber == 0} ? ' disabled'">
                                     <button type="submit"
                                             class="page-link btn btn-link p-0"
                                             name="paginated.pageNumber"
-                                            th:value="${filtro.paginated.pageNumber - 1}"
-                                            th:disabled="${filtro.paginated.pageNumber == 0}">
+                                            th:value="${form.paginated.pageNumber - 1}"
+                                            th:disabled="${form.paginated.pageNumber == 0}">
                                         &laquo;
                                     </button>
                                 </li>
 
                                 <!-- Números de página -->
                                 <th:block th:with="
-                start=${T(java.lang.Math).max(1, filtro.paginated.pageNumber - 3)},
-                end=${T(java.lang.Math).min(filtro.paginated.totalPages, filtro.paginated.pageNumber + 3)}">
+                start=${T(java.lang.Math).max(1, form.paginated.pageNumber - 3)},
+                end=${T(java.lang.Math).min(form.paginated.totalPages, form.paginated.pageNumber + 3)}">
 
                                     <li class="page-item"
                                         th:each="p : ${#numbers.sequence(start, end)}"
@@ -165,12 +176,12 @@
 
                                 <!-- Botón siguiente -->
                                 <li class="page-item"
-                                    th:classappend="${(filtro.paginated.pageNumber + 1) == filtro.paginated.totalPages} ? ' disabled'">
+                                    th:classappend="${(form.paginated.pageNumber + 1) == form.paginated.totalPages} ? ' disabled'">
                                     <button type="submit"
                                             class="page-link btn btn-link p-0"
                                             name="paginated.pageNumber"
-                                            th:value="${filtro.paginated.pageNumber + 1}"
-                                            th:disabled="${(filtro.paginated.pageNumber + 1) == filtro.paginated.totalPages}">
+                                            th:value="${form.paginated.pageNumber + 1}"
+                                            th:disabled="${(form.paginated.pageNumber + 1) == form.paginated.totalPages}">
                                         &raquo;
                                     </button>
                                 </li>
@@ -185,6 +196,101 @@
     </div>
 
 </div>
+
+<th:block layout:fragment="page-js">
+    <script type="text/javascript">
+        $(function() {
+            const DEBOUNCE_MS = 1000;
+            const $inputVerFiltros = $('[name="verFiltros"]');
+            const $filtrosWrapper = $('#filtrosWrapper');
+            let timer = null;
+
+
+            $filtrosWrapper.on('shown.bs.collapse', function (e) {
+                $inputVerFiltros.val('true');
+            });
+
+            $filtrosWrapper.on('hidden.bs.collapse', function (e) {
+                $inputVerFiltros.val('false');
+            });
+
+            function scheduleSubmit() {
+              const $form = $('#filterAndTable form');
+              if ($form.length === 0) return;
+
+              clearTimeout(timer);
+              timer = setTimeout(function () {
+                // Dispara un submit "real" para que HTMX lo intercepte
+                if ($form[0].requestSubmit) {
+                  $form[0].requestSubmit();      // modernos
+                } else {
+                  $form.trigger('submit');       // fallback
+                }
+              }, DEBOUNCE_MS);
+            }
+
+              // 1) Para inputs de texto/textarea: SOLO 'input' (no 'change')
+            $(document).on(
+                'input',
+                '#filterAndTable input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]), #filterAndTable textarea',
+                scheduleSubmit
+            );
+
+            // 2) Para selects/checkbox/radio: SOLO 'change'
+            $(document).on(
+                'change',
+                '#filterAndTable select, #filterAndTable input[type="checkbox"], #filterAndTable input[type="radio"]',
+                scheduleSubmit
+            );
+
+            // Si se hace submit manual (botón), cancela cualquier submit pendiente
+            $(document).on('submit', '#filterAndTable form', function () {
+              clearTimeout(timer);
+            });
+
+            // Si HTMX va a reemplazar el bloque, evita doble submit
+            document.body.addEventListener('htmx:beforeSwap', function (evt) {
+              if (evt.target && evt.target.id === 'filterAndTable') {
+                clearTimeout(timer);
+              }
+            });
+
+            $(document).on('click', '#btnLimpiarFiltros', function (e) {
+              e.preventDefault();
+              var $form = $('#filterAndTable form');
+
+              // Limpia textos/números/fechas (excepto hidden, submit, etc.)
+              $form.find('input:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"])').val('');
+              $form.find('textarea').val('');
+
+              // Limpia selects (apunta al placeholder con value="")
+              $form.find('select').each(function () {
+                if ($(this).find('option[value=""]').length) {
+                  $(this).val('');
+                } else {
+                  this.selectedIndex = 0; // fallback
+                }
+                $(this).trigger('change'); // por si hay dependencias
+              });
+
+              // Limpia checks/radios
+              $form.find('input[type="checkbox"], input[type="radio"]').prop('checked', false);
+
+              // Reinicia la página a la primera (0)
+              var $pageNumber = $form.find('input[name="paginated.pageNumber"]');
+              if ($pageNumber.length === 0) {
+                $('<input type="hidden" name="paginated.pageNumber" value="0">').appendTo($form);
+              } else {
+                $pageNumber.val('0');
+              }
+
+              // Envía con HTMX
+              if ($form[0].requestSubmit) $form[0].requestSubmit(); else $form.trigger('submit');
+            });
+
+        });
+    </script>
+</th:block>
 
 </body>
 </html>

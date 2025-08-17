@@ -1,0 +1,22 @@
+/* Overlay pantalla completa centrado */
+#globalLoading{
+  position: fixed;
+  inset: 0;                /* top/right/bottom/left: 0 */
+  z-index: 1060;           /* > modal bootstrap (1050) */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,.6);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms ease-in;
+}
+
+/* Modo visible:
+   - cuando htmx está en request (si usas hx-indicator)
+   - o cuando le agregas la clase .is-visible (jQuery AJAX) */
+.htmx-request #globalLoading,
+#globalLoading.is-visible{
+  opacity: 1;
+  pointer-events: auto;
+}

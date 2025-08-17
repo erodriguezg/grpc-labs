@@ -1,4 +1,4 @@
-package com.github.erodriguezg.grpcjavalab.web.vo;
+package com.github.erodriguezg.grpcjavalab.web.form;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PaginatedVO {
+public class PaginatedForm {
     private int pageNumber;
     private int pageSize;
     private int totalPages;

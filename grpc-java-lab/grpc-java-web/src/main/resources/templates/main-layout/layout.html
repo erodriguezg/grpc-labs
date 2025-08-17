@@ -22,6 +22,8 @@
 
     <!-- Custom styles for this template-->
     <link th:href="@{/css/sb-admin-2.min.css}" rel="stylesheet">
+    <link th:href="@{/css/app.css}" rel="stylesheet">
+
 
     <th:block layout:fragment="page-head-ext"></th:block>
 
@@ -43,6 +45,14 @@
 <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
 </a>
+
+<!-- Overlay de carga global -->
+<div id="globalLoading" aria-live="polite" aria-busy="true">
+    <div class="bg-white rounded shadow p-3 d-flex align-items-center">
+        <div class="spinner-border" role="status" aria-hidden="true"></div>
+        <span class="ml-2">Cargando…</span>
+    </div>
+</div>
 
 <th:block layout:insert="main-layout/logout-modal.html" />
 

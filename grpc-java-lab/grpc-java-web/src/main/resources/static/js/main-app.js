@@ -9,3 +9,11 @@ function addCSRFListener() {
         event.detail.headers[header] = token;
     });
 }
+
+function showLoading() {
+    $('#globalLoading').addClass('is-visible');
+}
+
+function hideLoading() {
+    $('#globalLoading').removeClass('is-visible');
+}
