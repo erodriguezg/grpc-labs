@@ -1,0 +1,57 @@
+syntax = "proto3";
+package grpc.comunidad;
+
+option java_package = "com.github.erodriguezg.grpcjavalab.api.grpc";
+option java_multiple_files = true;
+option java_outer_classname = "TerritorioServiceGrpcOuter";
+
+message RegionMsg {
+    int32 id_region = 1;
+    string nombre = 2;
+}
+
+message ProvinciaMsg {
+    int32 id_provincia = 1;
+    int32 region_id = 2;
+    string nombre = 3;
+}
+
+message ComunaMsg {
+    int32 id_comuna = 1;
+    int32 provincia_id = 2;
+    string nombre = 3;
+}
+
+message TraerRegionesRequestMsg {
+    /* empty*/
+}
+
+message TraerRegionesResponseMsg {
+    repeated RegionMsg regiones = 1;
+}
+
+message TraerProvinciasRequestMsg {
+    int32 region_id = 1;
+}
+
+message TraerProvinciasResponseMsg {
+    repeated ProvinciaMsg provincias = 1;
+}
+
+message TraerComunasRequestMsg {
+    int32 provincia_id = 1;
+}
+
+message TraerComunasResponseMsg {
+    repeated ComunaMsg comunas = 1;
+}
+
+service TerritorioService {
+
+    rpc TraerRegiones(TraerRegionesRequestMsg) returns (TraerRegionesResponseMsg);
+
+    rpc TraerProvinciasPorRegion(TraerProvinciasRequestMsg) returns (TraerProvinciasResponseMsg);
+
+    rpc TraerComunasPorProvincia(TraerComunasRequestMsg) returns (TraerComunasResponseMsg);
+
+}
