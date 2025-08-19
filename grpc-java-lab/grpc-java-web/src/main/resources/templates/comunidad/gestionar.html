@@ -164,7 +164,7 @@
 
                                     <li class="page-item"
                                         th:each="p : ${#numbers.sequence(start, end)}"
-                                        th:classappend="${p == filtro.paginated.pageNumber + 1} ? ' active'">
+                                        th:classappend="${p == form.paginated.pageNumber + 1} ? ' active'">
                                         <button type="submit"
                                                 class="page-link btn btn-link p-0"
                                                 name="paginated.pageNumber"
