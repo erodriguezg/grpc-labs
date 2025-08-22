@@ -1,6 +1,7 @@
 package com.github.erodriguezg.grpcjavalab.web.config;
 
 import com.github.erodriguezg.grpcjavalab.api.grpc.ComunidadServiceGrpc;
+import com.github.erodriguezg.grpcjavalab.api.grpc.TerritorioServiceGrpc;
 import com.github.erodriguezg.grpcjavalab.api.proto.UsuarioServiceGrpc;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +16,9 @@ public class GrpcClients {
     @GrpcClient("comunidad-service")
     private ComunidadServiceGrpc.ComunidadServiceBlockingStub comunidadServiceStub;
 
+    @GrpcClient("territorio-service")
+    private TerritorioServiceGrpc.TerritorioServiceBlockingStub territorioServiceStub;
+
     @Bean
     public UsuarioServiceGrpc.UsuarioServiceBlockingStub usuarioServiceGrpc() {
         return usuarioServiceStub;
@@ -24,5 +28,8 @@ public class GrpcClients {
     public ComunidadServiceGrpc.ComunidadServiceBlockingStub comunidadServiceGrpc() {
         return comunidadServiceStub;
     }
+
+    @Bean
+    public TerritorioServiceGrpc.TerritorioServiceBlockingStub territorioServiceGrpc() { return territorioServiceStub; }
 
 }

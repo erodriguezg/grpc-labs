@@ -1,11 +1,10 @@
 package com.github.erodriguezg.grpcjavalab.web.controllers;
 
-import com.github.erodriguezg.grpcjavalab.api.grpc.BuscarComunidadesRequestMsg;
-import com.github.erodriguezg.grpcjavalab.api.grpc.BuscarComunidadesResponseMsg;
-import com.github.erodriguezg.grpcjavalab.api.grpc.ComunidadServiceGrpc;
-import com.github.erodriguezg.grpcjavalab.web.view.ComunidadView;
+import com.github.erodriguezg.grpcjavalab.api.grpc.*;
 import com.github.erodriguezg.grpcjavalab.web.form.GestionarComunidadForm;
 import com.github.erodriguezg.grpcjavalab.web.form.PaginatedForm;
+import com.github.erodriguezg.grpcjavalab.web.view.ComunidadView;
+import com.github.erodriguezg.grpcjavalab.web.view.ValueLabel;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.github.erodriguezg.grpcjavalab.web.utils.StringUtil.trimOrBlank;
@@ -32,6 +32,8 @@ public class GestionarComunidadController {
     private static final int PAGE_SIZE_COMUNIDADES = 10;
 
     private final ComunidadServiceGrpc.ComunidadServiceBlockingStub comunidadServiceGrpc;
+
+    private final TerritorioServiceGrpc.TerritorioServiceBlockingStub territorioServiceGrpc;
 
     @GetMapping("/gestionar")
     public String irGestionar(Model model) {
@@ -65,7 +67,73 @@ public class GestionarComunidadController {
 
     // privates
 
+    private void traerRegionProvinciasComunas(GestionarComunidadForm form, Model model) {
+        traerRegiones(model);
+        traerProvincias(form, model);
+        traerComunas(form, model);
+    }
+
+    private void traerRegiones(Model model) {
+        var requestMsg = TraerRegionesRequestMsg.newBuilder()
+                .build();
+        var responseMsg = territorioServiceGrpc.traerRegiones(requestMsg);
+        var regiones = responseMsg.getRegionesList()
+                .stream()
+                .map(msg ->
+                        ValueLabel.<Integer>builder()
+                                .value(msg.getIdRegion())
+                                .label(msg.getNombre())
+                                .build())
+                .toList();
+        model.addAttribute("regiones", regiones);
+    }
+
+    private void traerProvincias(GestionarComunidadForm form, Model model) {
+        List<ValueLabel<Integer>> provincias;
+        if (form.getRegionId() != null) {
+            var requestMsg = TraerProvinciasRequestMsg.newBuilder()
+                    .setRegionId(form.getRegionId())
+                    .build();
+            var responseMsg = territorioServiceGrpc.traerProvinciasPorRegion(requestMsg);
+            provincias = responseMsg.getProvinciasList()
+                    .stream()
+                    .map(msg ->
+                            ValueLabel.<Integer>builder()
+                                    .value(msg.getIdProvincia())
+                                    .label(msg.getNombre())
+                                    .build())
+                    .toList();
+        } else {
+            provincias = Collections.emptyList();
+        }
+        model.addAttribute("provincias", provincias);
+    }
+
+    private void traerComunas(GestionarComunidadForm form, Model model) {
+        List<ValueLabel<Integer>> comunas;
+        if (form.getProvinciaId() != null) {
+            var requestMsg = TraerComunasRequestMsg.newBuilder()
+                    .setProvinciaId(form.getProvinciaId())
+                    .build();
+            var responseMsg = territorioServiceGrpc.traerComunasPorProvincia(requestMsg);
+            comunas = responseMsg.getComunasList()
+                    .stream()
+                    .map(msg ->
+                            ValueLabel.<Integer>builder()
+                                    .value(msg.getIdComuna())
+                                    .label(msg.getNombre())
+                                    .build())
+                    .toList();
+        } else {
+            comunas = Collections.emptyList();
+        }
+        model.addAttribute("comunas", comunas);
+    }
+
     private void buscar(GestionarComunidadForm form, Model model) {
+
+        traerRegionProvinciasComunas(form, model);
+
         var responseMsg = buscarCall(form);
         var comunidades = toComunidadViewList(responseMsg);
 

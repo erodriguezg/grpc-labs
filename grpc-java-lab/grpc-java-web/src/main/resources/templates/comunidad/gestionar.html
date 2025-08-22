@@ -75,26 +75,32 @@
 
                             <div class="form-group col-md-4">
                                 <label for="filtroRegion">Región</label>
-                                <select id="filtroRegion" name="regionId" class="form-control" th:value="*{regionId}">
-                                    <option value="">Choose...</option>
-                                    <!-- opciones -->
+                                <select id="filtroRegion" name="regionId" class="form-control" th:field="*{regionId}">
+                                    <option value="">- TODAS -</option>
+                                    <option th:each="region : ${regiones}"
+                                            th:value="${region.value}"
+                                            th:text="${region.label}"></option>
                                 </select>
                             </div>
 
                             <div class="form-group col-md-4">
                                 <label for="filtroProvincia">Provincia</label>
                                 <select id="filtroProvincia" name="provinciaId" class="form-control"
-                                        th:value="*{provinciaId}">
-                                    <option value="">Choose...</option>
-                                    <!-- opciones -->
+                                        th:field="*{provinciaId}">
+                                    <option value="">- TODAS -</option>
+                                    <option th:each="provincia : ${provincias}"
+                                            th:value="${provincia.value}"
+                                            th:text="${provincia.label}"></option>
                                 </select>
                             </div>
 
                             <div class="form-group col-md-4">
                                 <label for="filtroComuna">Comuna</label>
-                                <select id="filtroComuna" name="comunaId" class="form-control" th:value="*{comunaId}">
-                                    <option value="">Choose...</option>
-                                    <!-- opciones -->
+                                <select id="filtroComuna" name="comunaId" class="form-control" th:field="*{comunaId}">
+                                    <option value="">- TODAS -</option>
+                                    <option th:each="comuna : ${comunas}"
+                                            th:value="${comuna.value}"
+                                            th:text="${comuna.label}" ></option>
                                 </select>
                             </div>
                         </div>

@@ -28,6 +28,9 @@ grpc:
     usuario-service:
       address: ${GRPC_SERVER_COMMON_ENDPOINT:static://localhost:9091}
       negotiationType: ${GRPC_SERVER_COMMON_NEGOTIATION_TYPE:plaintext}
+    territorio-service:
+      address: ${GRPC_SERVER_COMMON_ENDPOINT:static://localhost:9091}
+      negotiationType: ${GRPC_SERVER_COMMON_NEGOTIATION_TYPE:plaintext}
 
 logging:
   level:
