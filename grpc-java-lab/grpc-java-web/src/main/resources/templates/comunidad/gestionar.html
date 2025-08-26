@@ -127,7 +127,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr th:each="comunidad : ${comunidades}" th:data-id-comunidad="${comunidad.id}">
+                            <tr th:each="comunidad, iterStat: ${comunidades}" th:data-id-comunidad="${comunidad.id}">
                                 <th scope="row" th:text="${comunidad.idAbreviado}" th:title="${comunidad.id}"></th>
                                 <td th:text="${comunidad.nombre}"></td>
                                 <td th:text="${comunidad.tipoNombre}"></td>
@@ -135,7 +135,30 @@
                                 <td th:text="${comunidad.comunaNombre}"></td>
                                 <td th:text="${comunidad.provinciaNombre}"></td>
                                 <td th:text="${comunidad.regionNombre}"></td>
-                                <td></td>
+                                <td>
+                                    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                        <button type="button" class="btn btn-secondary"><i class="fa fa-edit"></i></button>
+                                        <button type="button" class="btn btn-secondary"><i class="fa fa-trash"></i></button>
+                                        <div class="btn-group" role="group">
+                                            <button
+                                                    th:id="'btnGroupDrop' + ${iterStat.index}"
+                                                    type="button"
+                                                    class="btn btn-secondary dropdown-toggle"
+                                                    data-toggle="dropdown"
+                                                    aria-haspopup="true"
+                                                    aria-expanded="false">
+                                                Gestionar
+                                            </button>
+                                            <div class="dropdown-menu"
+                                                 th:aria-labelledby="'btnGroupDrop' + ${iterStat.index}">
+                                                <a class="dropdown-item" href="#">Personas</a>
+                                                <a class="dropdown-item" href="#">Inmuebles</a>
+                                                <a class="dropdown-item" href="#">Gasto Común</a>
+                                                <a class="dropdown-item" href="#">Recintos Comunes</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
                             </tr>
                             <tr th:if="${comunidades == null or comunidades.empty}" >
                                 <td colspan="8" style="text-align: center;">No se encontraron comunidades</td>
