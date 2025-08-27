@@ -1,4 +1,4 @@
-package com.github.erodriguezg.grpcjavalab.web.controllers;
+package com.github.erodriguezg.grpcjavalab.web.controllers.gestionar;
 
 import com.github.erodriguezg.grpcjavalab.api.grpc.*;
 import com.github.erodriguezg.grpcjavalab.web.form.GestionarComunidadForm;
@@ -23,11 +23,11 @@ import java.util.List;
 import static com.github.erodriguezg.grpcjavalab.web.utils.StringUtil.trimOrBlank;
 
 @Controller
-@RequestMapping("/comunidad/")
+@RequestMapping("/gestionar/comunidad")
 @RequiredArgsConstructor
-public class GestionarComunidadController {
+public class ComunidadController {
 
-    private final static Logger log = LoggerFactory.getLogger(GestionarComunidadController.class);
+    private final static Logger log = LoggerFactory.getLogger(ComunidadController.class);
 
     private static final int PAGE_SIZE_COMUNIDADES = 10;
 
@@ -35,7 +35,7 @@ public class GestionarComunidadController {
 
     private final TerritorioServiceGrpc.TerritorioServiceBlockingStub territorioServiceGrpc;
 
-    @GetMapping("/gestionar")
+    @GetMapping
     public String irGestionar(Model model) {
         var paginated = PaginatedForm.builder()
                 .pageNumber(0)

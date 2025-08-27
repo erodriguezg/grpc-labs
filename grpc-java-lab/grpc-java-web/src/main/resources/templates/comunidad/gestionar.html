@@ -151,7 +151,7 @@
                                             </button>
                                             <div class="dropdown-menu"
                                                  th:aria-labelledby="'btnGroupDrop' + ${iterStat.index}">
-                                                <a class="dropdown-item" href="#">Personas</a>
+                                                <a class="dropdown-item" th:href="@{/gestionar/comunidad/{id}/persona(id=${comunidad.id})}" >Personas</a>
                                                 <a class="dropdown-item" href="#">Inmuebles</a>
                                                 <a class="dropdown-item" href="#">Gasto Común</a>
                                                 <a class="dropdown-item" href="#">Recintos Comunes</a>

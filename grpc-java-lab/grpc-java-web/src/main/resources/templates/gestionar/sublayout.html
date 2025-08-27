@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{main-layout/layout}" lang="es">
+
+<body>
+
+<head>
+    <title layout:fragment="pageTitle">gRPC Java Lab - Gestionar</title>
+</head>
+
+<div layout:fragment="content" >
+    <div>
+        <p>aqui va el menu de gestionar comunidad: [[${idComunidad}]]</p>
+    </div>
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" href="#">Personas</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">Inmuebles</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">Recintos</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link disabled">Gasto Comun</a>
+        </li>
+    </ul>
+    <div layout:fragment="tab-content" style="background-color: white; padding: 32px 20px 10px 20px;"></div>
+</div>
+
+</body>
+</html>
