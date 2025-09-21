@@ -56,6 +56,7 @@ create table recintos_comunes (
 
 create table personas (
 	id_persona uuid primary key default gen_random_uuid(),
+	email varchar(300) not null unique,
 	rut int8 unique,
 	nombres varchar(255) not null,
 	apellidos varchar(255) not null,
@@ -63,6 +64,13 @@ create table personas (
 	telefono_dos varchar(255),
 	fecha_creacion timestamp not null,
 	fecha_modificacion timestamp
+);
+
+create table comunidad_personas (
+    id_comunidad_persona bigserial primary key,
+    comunidad_id uuid not null references comunidades(id_comunidad),
+    persona_id uuid not null references personas(id_persona),
+    constraint uq_comunidad_persona unique (comunidad_id, persona_id)
 );
 
 create table sistema_perfiles (
@@ -77,9 +85,9 @@ insert into sistema_perfiles (id_sistema_perfil, nombre) values
 create table usuarios (
 	id_usuario uuid primary key default gen_random_uuid(),
 	sistema_perfil_id int4 not null references sistema_perfiles(id_sistema_perfil),
-	persona_id uuid references personas(id_persona),
-	email varchar(255) not null unique,
+	persona_id uuid not null unique references personas(id_persona),
 	password varchar(500),
+	activo boolean not null,
 	fecha_creacion timestamp not null,
 	fecha_modificacion timestamp
 );
